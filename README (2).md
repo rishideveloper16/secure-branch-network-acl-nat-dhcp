@@ -1,21 +1,32 @@
-# Office Network Design & Configuration
+# Secure Branch Network – ACL, NAT & DHCP (Cisco IOS)
 
-## Description
-Designed a small-scale office network using Cisco Packet Tracer with VLAN configuration, IP subnetting, and inter-VLAN routing.
+Small branch office topology with:
+- Two VLANs: Users (VLAN 10) & Admin (VLAN 20)
+- Router-on-a-stick for inter-VLAN routing
+- **ACL** to restrict Users from reaching router management but allow internet
+- **NAT Overload (PAT)** for internet access
+- **DHCP** pools per VLAN
 
-## Features
-- Created a network for 3 departments (Admin, Sales, IT) with separate VLANs
-- Assigned IP addresses using subnetting for efficient network utilization
-- Configured routers and switches for communication between VLANs
-- Verified connectivity using ping tests
+## Topology
+Switch (VLAN10, VLAN20) ↔ Router (G0/0.10, G0/0.20) ↔ ISP/Internet
 
-## Tools Used
-- Cisco Packet Tracer
+## IP Plan
+- VLAN10 Users: 192.168.10.0/24, GW 192.168.10.1
+- VLAN20 Admin: 192.168.20.0/24, GW 192.168.20.1
+- WAN/Outside: 203.0.113.2/30 (router), 203.0.113.1/30 (ISP)
 
-## Steps to Run
-1. Open the `.pkt` file in Cisco Packet Tracer.
-2. Review VLAN configurations on switches.
-3. Run `ping` tests between PCs from different VLANs to verify routing.
+## Files
+- `router_config.txt` – full router commands
+- `switch_config.txt` – VLAN + trunks + access ports
+- `test_plan.md` – pings & verification steps
+- `topology.png` – (screenshot from Packet Tracer / diagram)
 
-## Output Example
-- Successful pings between VLANs after router-on-a-stick configuration.
+## How to run (Packet Tracer)
+1. Create VLAN 10 & 20 on switch, set trunk to router, access ports to PCs.
+2. On router, create sub-interfaces, apply `router_config.txt`.
+3. Verify DHCP leases on PCs, test inter-VLAN & internet via NAT.
+4. Check ACL blocks where expected (e.g., Users → router vty).
+
+## Deliverables
+- `SecureBranch.pkt` (Packet Tracer file)
+- Screenshots of: DHCP leases, NAT translations, ACL hit counters
