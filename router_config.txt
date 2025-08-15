@@ -1,0 +1,50 @@
+! G0/0 is inside (to switch), G0/1 is outside (to ISP)
+conf t
+hostname BRANCH-RTR
+!
+interface g0/0
+ no shut
+!
+interface g0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+!
+interface g0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+!
+interface g0/1
+ ip address 203.0.113.2 255.255.255.252
+ no shut
+!
+ip dhcp excluded-address 192.168.10.1 192.168.10.20
+ip dhcp excluded-address 192.168.20.1 192.168.20.20
+ip dhcp pool VLAN10
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+ dns-server 8.8.8.8
+ip dhcp pool VLAN20
+ network 192.168.20.0 255.255.255.0
+ default-router 192.168.20.1
+ dns-server 8.8.8.8
+!
+access-list 100 deny tcp 192.168.10.0 0.0.0.255 any eq 22
+access-list 100 deny tcp 192.168.10.0 0.0.0.255 any eq 23
+access-list 100 permit ip 192.168.10.0 0.0.0.255 any
+!
+ip nat inside source list 10 interface g0/1 overload
+access-list 10 permit 192.168.10.0 0.0.0.255
+access-list 10 permit 192.168.20.0 0.0.0.255
+!
+interface g0/0
+ ip nat inside
+interface g0/0.10
+ ip nat inside
+interface g0/0.20
+ ip nat inside
+interface g0/1
+ ip nat outside
+!
+ip route 0.0.0.0 0.0.0.0 203.0.113.1
+end
+wr
