@@ -1,0 +1,20 @@
+conf t
+hostname BRANCH-SW
+vlan 10
+ name USERS
+vlan 20
+ name ADMIN
+!
+interface g0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface g0/2
+ switchport mode access
+ switchport access vlan 10
+!
+interface g0/3
+ switchport mode access
+ switchport access vlan 20
+end
+wr
